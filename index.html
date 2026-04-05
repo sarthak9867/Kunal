@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlphaThreads & Inks — Custom T-Shirt Printing</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0a0a0a;
+    --white: #f7f5f0;
+    --cream: #f0ece3;
+    --accent: #e63323;
+    --accent2: #ff6b35;
+    --gold: #d4a853;
+    --mid: #3a3a3a;
+    --muted: #888;
+    --border: rgba(0,0,0,0.1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--white);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── ANNOUNCEMENT ── */
+  .announcement {
+    background: var(--gold);
+    padding: 11px 40px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.5px; color: var(--ink);
+    position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+  }
+  .announcement strong { color: #7a4e00; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 40px; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 70px;
+    background: rgba(247,245,240,0.97);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow 0.3s;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 2px;
+    color: var(--ink); text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo .red { color: var(--accent); }
+  .nav-logo .dot {
+    width: 8px; height: 8px;
+    background: var(--accent); border-radius: 50%;
+  }
+  .nav-links { display: flex; gap: 34px; list-style: none; }
+  .nav-links a {
+    font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--mid);
+    text-decoration: none; transition: color 0.2s;
+    position: relative; padding-bottom: 4px;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--accent);
+    transform: scaleX(0); transition: transform 0.25s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta {
+    background: var(--accent); color: white;
+    padding: 11px 26px; border: none; cursor: pointer;
+    font-family: 'Barlow', sans-serif; font-size: 12px;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: #c42818; transform: scale(1.03); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 160px 48px 80px;
+    position: relative; overflow: hidden;
+    background: var(--ink);
+  }
+  .hero-bg-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(130px, 24vw, 360px);
+    color: rgba(255,255,255,0.035);
+    white-space: nowrap; pointer-events: none;
+    letter-spacing: -4px; user-select: none;
+  }
+  .hero-bg-text::before {
+    content: none;
+  }
+  .hero-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 3.5px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 22px; display: flex; align-items: center; gap: 14px;
+  }
+  .hero-tag::before {
+    content: ''; display: inline-block;
+    width: 44px; height: 2px; background: var(--accent);
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 11vw, 148px);
+    line-height: 0.88; color: var(--white);
+    letter-spacing: 2px; position: relative; z-index: 1;
+  }
+  h1 em { color: var(--accent); font-style: normal; }
+  .hero-sub {
+    font-size: 18px; font-weight: 300;
+    color: rgba(247,245,240,0.58);
+    max-width: 520px; margin: 26px 0 44px;
+    line-height: 1.75; position: relative; z-index: 1;
+  }
+  .hero-btns {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .btn-primary {
+    background: var(--accent); color: white;
+    padding: 17px 44px; border: none; cursor: pointer;
+    font-family: 'Barlow', sans-serif; font-size: 13px;
+    font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--white);
+    padding: 17px 44px; cursor: pointer;
+    border: 1.5px solid rgba(247,245,240,0.28);
+    font-family: 'Barlow', sans-serif; font-size: 13px;
+    font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover {
+    border-color: var(--white);
+    background: rgba(247,245,240,0.07);
+  }
+  .hero-stats {
+    display: flex; gap: 52px; margin-top: 84px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.09);
+    position: relative; z-index: 1; flex-wrap: wrap;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; color: var(--white); line-height: 1;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(247,245,240,0.38);
+    margin-top: 5px;
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    background: var(--accent); overflow: hidden; padding: 15px 0;
+  }
+  .marquee-track {
+    display: flex; gap: 0;
+    animation: marquee 24s linear infinite;
+    width: max-content;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 3px;
+    color: white; padding: 0 34px; white-space: nowrap;
+  }
+  .marquee-sep { color: rgba(255,255,255,0.38); }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: 104px 48px; }
+  .section-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 6.5vw, 84px);
+    line-height: 0.95; letter-spacing: 1px;
+    color: var(--ink); margin-bottom: 18px;
+  }
+  .section-sub {
+    font-size: 17px; font-weight: 300; color: var(--muted);
+    max-width: 530px; line-height: 1.75; margin-bottom: 64px;
+  }
+
+  /* ── CATEGORIES ── */
+  #categories { background: var(--cream); }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 20px;
+  }
+  .cat-card {
+    background: var(--white); border: 1px solid var(--border);
+    padding: 38px 28px; cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .cat-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--accent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .cat-card:hover { transform: translateY(-7px); box-shadow: 0 22px 44px rgba(0,0,0,0.1); }
+  .cat-card:hover::before { transform: scaleX(1); }
+  .cat-icon {
+    font-size: 38px; margin-bottom: 20px; display: block;
+    transition: transform 0.3s;
+  }
+  .cat-card:hover .cat-icon { transform: scale(1.18) rotate(-5deg); }
+  .cat-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 9px;
+  }
+  .cat-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .cat-arrow {
+    position: absolute; top: 20px; right: 22px;
+    font-size: 20px; color: var(--accent);
+    opacity: 0; transform: translate(-8px, 8px);
+    transition: all 0.3s;
+  }
+  .cat-card:hover .cat-arrow { opacity: 1; transform: translate(0,0); }
+
+  /* ── PROCESS ── */
+  #process { background: var(--ink); }
+  #process .section-title { color: var(--white); }
+  #process .section-sub { color: rgba(247,245,240,0.46); }
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .process-step {
+    padding: 50px 34px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+  }
+  .process-step:last-child { border-right: none; }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px; color: rgba(255,255,255,0.055);
+    line-height: 1; margin-bottom: -20px;
+  }
+  .step-icon { font-size: 30px; margin-bottom: 22px; display: block; }
+  .step-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--white); margin-bottom: 11px;
+  }
+  .step-desc { font-size: 14px; color: rgba(247,245,240,0.47); line-height: 1.72; }
+
+  /* ── DESIGNER ── */
+  #designer { background: var(--white); }
+  .designer-wrap {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 64px; align-items: center;
+  }
+  .designer-preview {
+    background: var(--cream);
+    border: 2px dashed rgba(0,0,0,0.14);
+    aspect-ratio: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative;
+  }
+  .tshirt-svg { width: 230px; }
+  .designer-controls { display: flex; flex-direction: column; gap: 30px; }
+  .ctrl-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 11px;
+  }
+  .color-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+  .swatch {
+    width: 34px; height: 34px; border-radius: 50%;
+    cursor: pointer; border: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .swatch.active { border-color: var(--ink); transform: scale(1.18); }
+  .swatch:hover:not(.active) { transform: scale(1.1); }
+  .text-input {
+    width: 100%; padding: 14px 18px;
+    background: var(--cream); border: 1.5px solid var(--border);
+    font-family: 'Barlow', sans-serif; font-size: 14px;
+    color: var(--ink); outline: none; transition: border-color 0.2s;
+  }
+  .text-input:focus { border-color: var(--accent); }
+  .fabric-options { display: flex; gap: 12px; flex-wrap: wrap; }
+  .fabric-btn {
+    padding: 10px 20px; border: 1.5px solid var(--border);
+    background: transparent; cursor: pointer;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--mid); transition: all 0.2s;
+  }
+  .fabric-btn.active,
+  .fabric-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(230,51,35,0.05); }
+  .size-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+  .size-btn {
+    width: 46px; height: 46px;
+    border: 1.5px solid var(--border); background: transparent; cursor: pointer;
+    font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--mid); transition: all 0.2s;
+  }
+  .size-btn.active,
+  .size-btn:hover { border-color: var(--accent); background: var(--accent); color: white; }
+  .add-cart-btn {
+    width: 100%; padding: 19px;
+    background: var(--accent); color: white; border: none; cursor: pointer;
+    font-family: 'Barlow', sans-serif; font-size: 15px;
+    font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .add-cart-btn:hover { background: #c42818; transform: translateY(-2px); }
+
+  /* ── PRINT TECH ── */
+  #tech { background: var(--cream); }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+  .tech-card {
+    background: var(--white); padding: 40px 32px;
+    border: 1px solid var(--border); transition: all 0.25s;
+  }
+  .tech-card:hover { transform: translateY(-5px); box-shadow: 0 16px 36px rgba(0,0,0,0.08); }
+  .tech-icon { font-size: 40px; margin-bottom: 20px; }
+  .tech-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--ink); margin-bottom: 8px;
+  }
+  .tech-badge {
+    display: inline-block; background: rgba(230,51,35,0.1);
+    color: var(--accent); font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 12px; margin-bottom: 14px;
+  }
+  .tech-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* ── PRICING ── */
+  #pricing { background: var(--white); }
+  .pricing-important {
+    font-size: 16px; font-weight: 700; color: var(--accent);
+    padding: 16px 24px; margin-bottom: 28px;
+    background: rgba(230,51,35,0.08);
+    border-left: 4px solid var(--accent);
+    border-radius: 4px; letter-spacing: 0.3px;
+  }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; align-items: start;
+  }
+  .pricing-card {
+    background: var(--cream); padding: 42px 34px;
+    border: 1.5px solid var(--border); position: relative;
+    transition: all 0.25s;
+  }
+  .pricing-card.featured {
+    background: var(--ink); border-color: var(--ink);
+    transform: translateY(-14px);
+  }
+  .pricing-card:hover:not(.featured) { transform: translateY(-7px); box-shadow: 0 22px 44px rgba(0,0,0,0.09); }
+  .popular-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: white;
+    padding: 5px 22px; font-size: 11px;
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .plan-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+  }
+  .featured .plan-name { color: rgba(247,245,240,0.45); }
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 68px; line-height: 1; color: var(--ink);
+  }
+  .featured .plan-price { color: var(--white); }
+  .plan-price sup { font-size: 28px; vertical-align: top; margin-top: 10px; }
+  .plan-price span { font-size: 20px; }
+  .plan-per { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+  .featured .plan-per { color: rgba(247,245,240,0.38); }
+  .plan-features { list-style: none; margin-bottom: 34px; }
+  .plan-features li {
+    font-size: 14px; padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--mid); display: flex; gap: 11px; align-items: center;
+  }
+  .featured .plan-features li { border-color: rgba(255,255,255,0.07); color: rgba(247,245,240,0.68); }
+  .plan-features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+  .plan-btn {
+    width: 100%; padding: 16px;
+    background: transparent; border: 1.5px solid rgba(0,0,0,0.15);
+    font-family: 'Barlow', sans-serif; font-size: 13px;
+    font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--ink); cursor: pointer; transition: all 0.2s;
+  }
+  .featured .plan-btn { background: var(--accent); border-color: var(--accent); color: white; }
+  .plan-btn:hover:not(.featured .plan-btn) { background: var(--accent); border-color: var(--accent); color: white; }
+  .featured .plan-btn:hover { background: var(--accent2); border-color: var(--accent2); }
+
+  /* ── REVIEWS ── */
+  #reviews { background: var(--cream); }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .review-card {
+    background: var(--white); padding: 38px 34px;
+    border: 1px solid var(--border);
+  }
+  .stars { color: var(--gold); font-size: 15px; margin-bottom: 18px; }
+  .review-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 88px; color: var(--accent); opacity: 0.18;
+    line-height: 0.5; margin-bottom: 22px;
+  }
+  .review-text {
+    font-size: 15px; font-weight: 400;
+    line-height: 1.82; color: var(--mid); margin-bottom: 26px;
+  }
+  .reviewer { display: flex; align-items: center; gap: 14px; }
+  .reviewer-avatar {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; color: var(--white); flex-shrink: 0;
+  }
+  .reviewer-name { font-weight: 700; font-size: 15px; color: var(--ink); }
+  .reviewer-role { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* ── BULK ── */
+  #bulk {
+    background: var(--accent); padding: 88px 48px;
+    text-align: center;
+  }
+  #bulk .section-tag { color: rgba(255,255,255,0.58); }
+  #bulk .section-title { color: white; }
+  #bulk .section-sub { color: rgba(255,255,255,0.72); margin: 0 auto 44px; }
+  .bulk-features {
+    display: flex; justify-content: center; gap: 48px;
+    flex-wrap: wrap; margin-bottom: 52px;
+  }
+  .bulk-feat {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.88);
+  }
+  .bulk-feat .icon { font-size: 22px; }
+  .btn-white {
+    background: white; color: var(--accent);
+    padding: 18px 56px; border: none; cursor: pointer;
+    font-family: 'Barlow', sans-serif; font-size: 14px;
+    font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+  .btn-white:hover { background: var(--ink); color: white; transform: translateY(-2px); }
+
+  /* ── FAQ ── */
+  #faq { background: var(--white); }
+  .faq-list { max-width: 760px; }
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-q {
+    width: 100%; background: none; border: none;
+    padding: 22px 0; text-align: left; cursor: pointer;
+    font-family: 'Barlow', sans-serif; font-size: 16px;
+    font-weight: 600; color: var(--ink);
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    transition: color 0.2s;
+  }
+  .faq-q:hover { color: var(--accent); }
+  .faq-icon {
+    width: 26px; height: 26px; background: var(--ink);
+    border-radius: 50%; color: white; font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.3s; font-style: normal;
+    line-height: 1;
+  }
+  .faq-item.open .faq-icon { background: var(--accent); transform: rotate(45deg); }
+  .faq-a {
+    font-size: 14px; color: var(--muted); line-height: 1.82;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.38s ease, padding 0.28s;
+  }
+  .faq-item.open .faq-a { max-height: 240px; padding-bottom: 22px; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--cream); }
+  .contact-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start;
+  }
+  .contact-info h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; color: var(--ink); margin-bottom: 24px;
+  }
+  .contact-detail {
+    display: flex; gap: 14px; margin-bottom: 20px; align-items: flex-start;
+  }
+  .contact-detail .icon { font-size: 20px; margin-top: 2px; }
+  .contact-detail p { font-size: 14px; color: var(--mid); line-height: 1.65; }
+  .contact-detail strong { display: block; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .form-input, .form-select, .form-textarea {
+    padding: 13px 16px;
+    background: var(--white); border: 1.5px solid var(--border);
+    font-family: 'Barlow', sans-serif; font-size: 14px;
+    color: var(--ink); outline: none; transition: border-color 0.2s;
+    width: 100%;
+  }
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  .form-submit {
+    padding: 16px; background: var(--accent); color: white; border: none;
+    cursor: pointer; font-family: 'Barlow', sans-serif; font-size: 14px;
+    font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .form-submit:hover { background: #c42818; transform: translateY(-2px); }
+
+  /* ── FOOTER ── */
+  footer { background: var(--ink); color: var(--white); padding: 84px 48px 34px; }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 44px; margin-bottom: 64px;
+  }
+  .footer-brand .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px; letter-spacing: 2px; margin-bottom: 16px;
+  }
+  .footer-brand .logo span { color: var(--accent); }
+  .footer-brand p {
+    font-size: 14px; color: rgba(247,245,240,0.38);
+    line-height: 1.82; max-width: 290px;
+  }
+  .footer-brand .social { display: flex; gap: 12px; margin-top: 24px; }
+  .social-btn {
+    width: 38px; height: 38px;
+    border: 1px solid rgba(255,255,255,0.14);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(247,245,240,0.48); font-size: 13px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s; cursor: pointer;
+    background: transparent; font-family: 'Barlow', sans-serif;
+  }
+  .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .footer-col h4 {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: rgba(247,245,240,0.3);
+    margin-bottom: 22px;
+  }
+  .footer-col a {
+    display: block; font-size: 14px; color: rgba(247,245,240,0.56);
+    text-decoration: none; margin-bottom: 12px; transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--accent); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-bottom p { font-size: 13px; color: rgba(247,245,240,0.26); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-size: 12px; color: rgba(247,245,240,0.36);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── FLOATING CART ── */
+  .floating-cart {
+    position: fixed; bottom: 30px; right: 30px; z-index: 200;
+    width: 58px; height: 58px;
+    background: var(--accent); border: none; border-radius: 50%;
+    cursor: pointer; font-size: 24px; color: white;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 24px rgba(230,51,35,0.42);
+    transition: all 0.25s;
+  }
+  .floating-cart:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(230,51,35,0.55); }
+  .cart-badge {
+    position: absolute; top: -5px; right: -5px;
+    background: var(--ink); color: white;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow', sans-serif;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 100px; right: 30px; z-index: 300;
+    background: var(--ink); color: var(--white);
+    padding: 14px 22px; font-size: 14px; font-weight: 600;
+    border-left: 4px solid var(--accent);
+    transform: translateX(120%); transition: transform 0.35s ease;
+    max-width: 280px;
+  }
+  .toast.show { transform: translateX(0); }
+
+  /* ── BACK TO TOP ── */
+  .back-top {
+    position: fixed; bottom: 30px; left: 30px; z-index: 200;
+    width: 44px; height: 44px;
+    background: rgba(10,10,10,0.7); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%; cursor: pointer; font-size: 18px; color: white;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: all 0.3s;
+  }
+  .back-top.visible { opacity: 1; pointer-events: all; }
+  .back-top:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    section { padding: 70px 20px; }
+    #hero { padding: 140px 20px 70px; }
+    h1 { font-size: 58px; }
+    .designer-wrap { grid-template-columns: 1fr; }
+    .contact-wrap { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+    #bulk { padding: 70px 20px; }
+  }
+  @media (max-width: 480px) {
+    .hero-stats { flex-direction: column; gap: 20px; }
+    .footer-top { grid-template-columns: 1fr; }
+    .pricing-card.featured { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Announcement Bar -->
+<div class="announcement">
+  🎉 <strong>FREE SHIPPING</strong> on orders above ₹999 &nbsp;|&nbsp; Use code <strong>ALPHA20</strong> for 20% off your first order &nbsp;|&nbsp; 📞 +91 98765 43210
+</div>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Alpha<span class="red">Threads</span> <div class="dot"></div> Inks</a>
+  <ul class="nav-links">
+    <li><a href="#categories">Shop</a></li>
+    <li><a href="#designer">Design</a></li>
+    <li><a href="#tech">Print Tech</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('designer').scrollIntoView({behavior:'smooth'})">Start Designing →</button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-bg-text">ALPHA</div>
+  <div class="hero-tag">Mumbai's Premier Custom Apparel Studio</div>
+  <h1>WEAR<br>YOUR <em>STORY.</em></h1>
+  <p class="hero-sub">Design custom t-shirts, jerseys, hoodies & sportswear that make your team, brand, or vibe impossible to ignore. 100% made-to-order. Fast delivery across India.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('designer').scrollIntoView({behavior:'smooth'})">Design Now — It's Free</button>
+    <button class="btn-outline" onclick="document.getElementById('categories').scrollIntoView({behavior:'smooth'})">Browse Categories</button>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-num">50<span>K+</span></div><div class="stat-label">Happy Customers</div></div>
+    <div><div class="stat-num">2<span>M+</span></div><div class="stat-label">Tshirts Printed</div></div>
+    <div><div class="stat-num">48<span>HR</span></div><div class="stat-label">Express Delivery</div></div>
+    <div><div class="stat-num">4.9<span>★</span></div><div class="stat-label">Average Rating</div></div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">CUSTOM TSHIRTS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">SPORTSWEAR</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">TEAM JERSEYS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">HOODIES & SWEATSHIRTS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">POLO SHIRTS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">CORPORATE WEAR</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">EVENT MERCHANDISE</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">KIDS COLLECTION</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">CUSTOM TSHIRTS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">SPORTSWEAR</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">TEAM JERSEYS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">HOODIES & SWEATSHIRTS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">POLO SHIRTS</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">CORPORATE WEAR</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">EVENT MERCHANDISE</span><span class="marquee-item marquee-sep">✦</span>
+    <span class="marquee-item">KIDS COLLECTION</span><span class="marquee-item marquee-sep">✦</span>
+  </div>
+</div>
+
+<!-- ═══ CATEGORIES ═══ -->
+<section id="categories">
+  <div class="section-tag">All Categories</div>
+  <div class="section-title">Find Your<br>Perfect Fit</div>
+  <p class="section-sub">From sports jerseys to corporate uniforms — we custom-print everything, for everyone.</p>
+  <div class="cat-grid">
+    <div class="cat-card" onclick="showToast('Browsing Sportswear collection...')">
+      <div class="cat-icon">⚽</div>
+      <div class="cat-name">Sportswear</div>
+      <div class="cat-desc">Jerseys, shorts, tracksuits for football, cricket, basketball & more</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card" onclick="showToast('Browsing Casual Tees...')">
+      <div class="cat-icon">👕</div>
+      <div class="cat-name">Casual Tees</div>
+      <div class="cat-desc">Classic and oversized fits in 100% cotton & blended fabrics</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card" onclick="showToast('Browsing Corporate Wear...')">
+      <div class="cat-icon">🏢</div>
+      <div class="cat-name">Corporate Wear</div>
+      <div class="cat-desc">Branded polos, uniforms & team kits with your company logo</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card" onclick="showToast('Browsing Hoodies & Sweats...')">
+      <div class="cat-icon">🧥</div>
+      <div class="cat-name">Hoodies & Sweats</div>
+      <div class="cat-desc">Premium heavyweight fleece, zip-ups & pullover hoodies</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card" onclick="showToast('Browsing College Wear...')">
+      <div class="cat-icon">🎓</div>
+      <div class="cat-name">College Wear</div>
+      <div class="cat-desc">Class merch, society tees, fresher kits & graduation apparel</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card" onclick="showToast('Browsing Event Merch...')">
+      <div class="cat-icon">🎪</div>
+      <div class="cat-name">Event Merch</div>
+      <div class="cat-desc">Concert merch, cultural fest, marathon & wedding events</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card" onclick="showToast('Browsing Kids Collection...')">
+      <div class="cat-icon">🧒</div>
+      <div class="cat-name">Kids Collection</div>
+      <div class="cat-desc">Super-soft, safe & fun designs for ages 2–14 years</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card" onclick="showToast('Browsing Gym & Fitness wear...')">
+      <div class="cat-icon">💪</div>
+      <div class="cat-name">Gym & Fitness</div>
+      <div class="cat-desc">Dry-fit tees, compression wear & gym tanks for athletes</div>
+      <div class="cat-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROCESS ═══ -->
+<section id="process">
+  <div class="section-tag">The Process</div>
+  <div class="section-title">4 Steps to<br>Your Custom Tee</div>
+  <p class="section-sub">Designing your perfect custom tee has never been easier. From idea to doorstep in days.</p>
+  <div class="process-grid">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-icon">🎨</div>
+      <div class="step-title">Choose & Design</div>
+      <div class="step-desc">Pick your garment type, colour & size. Upload your design or use our free online designer tool to create something from scratch.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-icon">✅</div>
+      <div class="step-title">Review & Approve</div>
+      <div class="step-desc">We send you a free digital mockup within 2 hours for approval. Unlimited revisions until you're 100% happy.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-icon">🖨️</div>
+      <div class="step-title">Print & Produce</div>
+      <div class="step-desc">Our skilled team brings your design to life using DTF, screen print & embroidery techniques on premium quality garments.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-icon">🚀</div>
+      <div class="step-title">Deliver Fast</div>
+      <div class="step-desc">Pan-India delivery in 3–7 business days. Express 48-hour turnaround available for urgent bulk orders.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DESIGNER TOOL ═══ -->
+<section id="designer">
+  <div class="section-tag">Online Designer</div>
+  <div class="section-title">Design It<br>Your Way</div>
+  <p class="section-sub">Customise colour, text, fabric and size right here. Your live preview updates instantly.</p>
+  <div class="designer-wrap">
+    <div class="designer-preview">
+      <svg class="tshirt-svg" id="tshirt-svg" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path id="tshirt-body"
+          d="M62 32 L18 72 L40 82 L30 198 L170 198 L160 82 L182 72 L138 32 Q118 16 100 22 Q82 16 62 32Z"
+          fill="#e63323" stroke="#c0bbb5" stroke-width="1.5"/>
+        <text id="tshirt-text" x="100" y="130" text-anchor="middle"
+          font-family="Bebas Neue, sans-serif" font-size="17" fill="white" opacity="0.88">YOUR TEXT</text>
+        <text id="tshirt-sub" x="100" y="150" text-anchor="middle"
+          font-family="Barlow, sans-serif" font-size="8" fill="white" opacity="0.5" letter-spacing="2">ALPHATHREADS</text>
+      </svg>
+      <p style="margin-top:14px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted)">Live Preview</p>
+    </div>
+    <div class="designer-controls">
+      <div>
+        <div class="ctrl-label">T-shirt Colour</div>
+        <div class="color-swatches">
+          <div class="swatch active" style="background:#e63323" onclick="setColor(this,'#e63323','white')"></div>
+          <div class="swatch" style="background:#0a0a0a" onclick="setColor(this,'#0a0a0a','white')"></div>
+          <div class="swatch" style="background:#1a3a6b" onclick="setColor(this,'#1a3a6b','white')"></div>
+          <div class="swatch" style="background:#1d7a4a" onclick="setColor(this,'#1d7a4a','white')"></div>
+          <div class="swatch" style="background:#f7f5f0;border:2px solid #ccc" onclick="setColor(this,'#f7f5f0','#1a1a1a')"></div>
+          <div class="swatch" style="background:#d4a853" onclick="setColor(this,'#d4a853','#1a1a1a')"></div>
+          <div class="swatch" style="background:#8b2fc9" onclick="setColor(this,'#8b2fc9','white')"></div>
+          <div class="swatch" style="background:#e07b27" onclick="setColor(this,'#e07b27','white')"></div>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label">Your Custom Text</div>
+        <input type="text" class="text-input" id="custom-text"
+          placeholder="E.g. TEAM ALPHA, YOUR NAME..." maxlength="20"
+          oninput="updateText(this.value)">
+      </div>
+      <div>
+        <div class="ctrl-label">Fabric Type</div>
+        <div class="fabric-options">
+          <button class="fabric-btn active" onclick="selectFabric(this)">100% Cotton</button>
+          <button class="fabric-btn" onclick="selectFabric(this)">Dry-Fit</button>
+          <button class="fabric-btn" onclick="selectFabric(this)">Poly-Cotton</button>
+          <button class="fabric-btn" onclick="selectFabric(this)">Fleece</button>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label">Size</div>
+        <div class="size-grid">
+          <button class="size-btn" onclick="selectSize(this)">XS</button>
+          <button class="size-btn" onclick="selectSize(this)">S</button>
+          <button class="size-btn active" onclick="selectSize(this)">M</button>
+          <button class="size-btn" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+          <button class="size-btn" onclick="selectSize(this)">XXL</button>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl-label">Quantity</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button class="size-btn" id="qty-minus" onclick="changeQty(-1)" style="width:44px;">−</button>
+          <span id="qty-display" style="font-family:'Bebas Neue',sans-serif;font-size:32px;min-width:40px;text-align:center;">1</span>
+          <button class="size-btn" id="qty-plus" onclick="changeQty(1)" style="width:44px;">+</button>
+          <span id="price-display" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);margin-left:8px;">₹499</span>
+        </div>
+      </div>
+      <button class="add-cart-btn" onclick="addToCart()">Add to Cart — Get Instant Quote →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRINT TECH ═══ -->
+<section id="tech">
+  <div class="section-tag">Printing Technology</div>
+  <div class="section-title">Best-in-Class<br>Print Methods</div>
+  <p class="section-sub">We use the right technique for every job — ensuring the highest quality results every single time.</p>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-icon">🖨️</div>
+      <div class="tech-name">DTF Printing</div>
+      <div class="tech-badge">Best for: Small Orders</div>
+      <div class="tech-desc">Direct-to-Film printing delivers vibrant, full-colour prints with incredible detail. No minimums, perfect for 1–9 pieces.</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🎨</div>
+      <div class="tech-name">Screen Printing</div>
+      <div class="tech-badge">Best for: Bulk Orders</div>
+      <div class="tech-desc">The gold standard for bulk. Exceptional colour vibrancy and durability. Ideal for 10+ pieces with solid colour designs.</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🧵</div>
+      <div class="tech-name">Embroidery</div>
+      <div class="tech-badge">Best for: Premium Look</div>
+      <div class="tech-desc">Stitched directly into the fabric for a premium, lasting finish. Perfect for logos on polo shirts and caps.</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-icon">🌈</div>
+      <div class="tech-name">Sublimation</div>
+      <div class="tech-badge">Best for: Sportswear</div>
+      <div class="tech-desc">Full-body, edge-to-edge prints that never crack or fade. The ultimate technique for sportswear and all-over designs.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section id="pricing">
+  <div class="section-tag">Pricing Plans</div>
+  <div class="section-title">Simple, Honest<br>Pricing</div>
+  <p class="section-sub">No hidden charges. The more you order, the more you save. All plans include a free mockup.</p>
+  <p class="pricing-important">⚠️ Pricing may differ according to the requirnment</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="plan-name">Solo</div>
+      <div class="plan-price"><sup>₹</sup>399<span>/tee</span></div>
+      <div class="plan-per">1–4 pieces</div>
+      <ul class="plan-features">
+        <li>Any 1 colour print</li>
+        <li>Front or back print</li>
+        <li>100% Cotton fabric</li>
+        <li>Delivered in 5–7 days</li>
+        <li>Free digital mockup</li>
+        <li>Pan-India shipping</li>
+      </ul>
+      <button class="plan-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+    </div>
+    <div class="pricing-card featured">
+      <div class="popular-badge">Most Popular</div>
+      <div class="plan-name">Team</div>
+      <div class="plan-price"><sup>₹</sup>299<span>/tee</span></div>
+      <div class="plan-per">10–49 pieces</div>
+      <ul class="plan-features">
+        <li>Full colour DTF print</li>
+        <li>Front + back + sleeve</li>
+        <li>Choice of any fabric</li>
+        <li>Delivered in 3–5 days</li>
+        <li>Free name & number</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="plan-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Order Now</button>
+    </div>
+    <div class="pricing-card">
+      <div class="plan-name">Bulk / Brand</div>
+      <div class="plan-price"><sup>₹</sup>249<span>/tee</span></div>
+      <div class="plan-per">50+ pieces</div>
+      <ul class="plan-features">
+        <li>Premium screen printing</li>
+        <li>Custom packaging & tags</li>
+        <li>Dedicated account manager</li>
+        <li>Express 48-hr turnaround</li>
+        <li>GST invoice available</li>
+        <li>COD & all payments</li>
+      </ul>
+      <button class="plan-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Custom Quote</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ REVIEWS ═══ -->
+<section id="reviews">
+  <div class="section-tag">Customer Reviews</div>
+  <div class="section-title">Don't Take<br>Our Word For It</div>
+  <p class="section-sub">Thousands of happy customers across India. Here's what a few of them have to say.</p>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-quote">"</div>
+      <div class="review-text">Ordered 80 jerseys for our football club. Quality is outstanding — the print hasn't faded after 20 washes. Will definitely reorder for next season!</div>
+      <div class="reviewer">
+        <div class="reviewer-avatar">RK</div>
+        <div>
+          <div class="reviewer-name">Rahul Kapoor</div>
+          <div class="reviewer-role">FC Mumbai Academy, Captain</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-quote">"</div>
+      <div class="review-text">Used AlphaThreads for our startup's team tees. The turnaround was insane — 60 pieces in 3 days! The design team was super responsive and helpful.</div>
+      <div class="reviewer">
+        <div class="reviewer-avatar">PS</div>
+        <div>
+          <div class="reviewer-name">Priya Sharma</div>
+          <div class="reviewer-role">Co-founder, TechBridge India</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-quote">"</div>
+      <div class="review-text">Got custom merch for our college fest. Everyone loved the quality. So many people asked where we got them printed. Will 100% come back for next year!</div>
+      <div class="reviewer">
+        <div class="reviewer-avatar">AN</div>
+        <div>
+          <div class="reviewer-name">Arjun Nair</div>
+          <div class="reviewer-role">Cultural Fest Head, VJTI Mumbai</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-quote">"</div>
+      <div class="review-text">The embroidery on our corporate polos looks absolutely premium. Our clients keep complimenting the team's uniform. Best investment we've made for branding.</div>
+      <div class="reviewer">
+        <div class="reviewer-avatar">SM</div>
+        <div>
+          <div class="reviewer-name">Sneha Mehta</div>
+          <div class="reviewer-role">HR Manager, FinEdge Pvt. Ltd.</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-quote">"</div>
+      <div class="review-text">Ordered 200 marathon event tees. Delivered on time, colour was exactly as in the mockup. Packaging was neat too. Highly recommend for large event orders.</div>
+      <div class="reviewer">
+        <div class="reviewer-avatar">VD</div>
+        <div>
+          <div class="reviewer-name">Vikram Desai</div>
+          <div class="reviewer-role">Event Director, RunMumbai 2024</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★☆</div>
+      <div class="review-quote">"</div>
+      <div class="review-text">Great quality for the price! Ordered some oversized tees with custom graphics. Fit and finish are excellent. Only wish they had more color variety for the fleece hoodies.</div>
+      <div class="reviewer">
+        <div class="reviewer-avatar">KP</div>
+        <div>
+          <div class="reviewer-name">Karan Patel</div>
+          <div class="reviewer-role">Streetwear Enthusiast, Pune</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BULK CTA ═══ -->
+<section id="bulk">
+  <div class="section-tag">Bulk & Corporate Orders</div>
+  <div class="section-title">Need 50+ Pieces?<br>We've Got You.</div>
+  <p class="section-sub">Special rates for teams, corporates, colleges & events. Get a free quote in under 2 hours.</p>
+  <div class="bulk-features">
+    <div class="bulk-feat"><span class="icon">📦</span> Free Custom Packaging</div>
+    <div class="bulk-feat"><span class="icon">🏷️</span> Branded Hang Tags</div>
+    <div class="bulk-feat"><span class="icon">⚡</span> 48-Hour Express Option</div>
+    <div class="bulk-feat"><span class="icon">🧾</span> GST Invoice Available</div>
+    <div class="bulk-feat"><span class="icon">🚚</span> Pan-India Delivery</div>
+    <div class="bulk-feat"><span class="icon">💳</span> COD & All Payments</div>
+  </div>
+  <button class="btn-white" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Free Bulk Quote →</button>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section id="faq">
+  <div class="section-tag">FAQ</div>
+  <div class="section-title">Common<br>Questions</div>
+  <p class="section-sub">Everything you need to know about ordering from AlphaThreads & Inks.</p>
+  <div class="faq-list" id="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What's the minimum order quantity?<i class="faq-icon">+</i></button>
+      <div class="faq-a">There's no minimum! You can order even a single custom tee. However, pricing gets significantly better for orders of 10+ and 50+ pieces. Check our pricing section above for the full breakdown.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What printing methods do you use?<i class="faq-icon">+</i></button>
+      <div class="faq-a">We use DTF (Direct to Film), Screen Printing, Embroidery, and Sublimation — depending on your design, quantity, and garment type. Our team automatically recommends the best method for your specific order.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How long does delivery take?<i class="faq-icon">+</i></button>
+      <div class="faq-a">Standard orders: 5–7 business days. Team orders (10–49 pcs): 3–5 days. Express 48-hour turnaround is available for bulk orders at an additional charge. All orders ship pan-India with full tracking.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Can I provide my own design or artwork?<i class="faq-icon">+</i></button>
+      <div class="faq-a">Absolutely! Upload your artwork in PNG, JPG, PDF, AI, or PSD format. For best results, use files at 300 DPI resolution. Our design team checks every file and suggests improvements if needed — free of charge.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Do you deliver across India?<i class="faq-icon">+</i></button>
+      <div class="faq-a">Yes! We deliver to all states and union territories across India via trusted courier partners. Same-day dispatch and next-day delivery is available within Mumbai for local pickup orders.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What's your return and refund policy?<i class="faq-icon">+</i></button>
+      <div class="faq-a">Since all products are custom-made to order, we don't accept returns unless there's a manufacturing defect or print error on our end. In that case, we redo the entire order.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Do you offer design assistance?<i class="faq-icon">+</i></button>
+      <div class="faq-a">Yes! Our in-house design team can help you create or refine your artwork. Basic design assistance is free with any order. For complex custom illustrations or brand identity work, minimal charges may apply.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="section-tag">Get In Touch</div>
+  <div class="section-title">Let's Make<br>Something Great</div>
+  <p class="section-sub">Have a project in mind? Fill the form and we'll get back within 2 hours during business hours.</p>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <h3>Reach Us Directly</h3>
+      <div class="contact-detail">
+        <div class="icon">📞</div>
+        <p><strong>Phone / WhatsApp</strong>+91 98765 43210<br>Mon–Sat, 9 AM – 7 PM</p>
+      </div>
+      <div class="contact-detail">
+        <div class="icon">✉️</div>
+        <p><strong>Email</strong>hello@alphathreadsinks.com<br>Reply within 2 hours</p>
+      </div>
+      <div class="contact-detail">
+        <div class="icon">📍</div>
+        <p><strong>Studio / Pickup</strong>Shop 12, Textile Market,<br>Dharavi, Mumbai — 400017</p>
+      </div>
+      <div class="contact-detail">
+        <div class="icon">🕐</div>
+        <p><strong>Working Hours</strong>Monday to Saturday: 9 AM – 7 PM<br>Sunday: 10 AM – 3 PM</p>
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="handleFormSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Your Name *</label>
+          <input type="text" class="form-input" placeholder="Rahul Kapoor" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input type="tel" class="form-input" placeholder="+91 98765 43210" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="your@email.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-select" required>
+            <option value="">Select category</option>
+            <option>Sportswear / Jerseys</option>
+            <option>Casual T-Shirts</option>
+            <option>Corporate / Uniforms</option>
+            <option>Hoodies & Sweatshirts</option>
+            <option>College / Fest Wear</option>
+            <option>Event Merchandise</option>
+            <option>Kids Collection</option>
+            <option>Gym & Fitness</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Quantity *</label>
+          <select class="form-select" required>
+            <option value="">Select quantity</option>
+            <option>1–4 pieces</option>
+            <option>5–9 pieces</option>
+            <option>10–49 pieces</option>
+            <option>50–99 pieces</option>
+            <option>100–499 pieces</option>
+            <option>500+ pieces</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell us about your requirement</label>
+        <textarea class="form-textarea" placeholder="Describe your design idea, any specific colours, deadline, or other requirements..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">Send Enquiry — We'll Reply in 2 Hours →</button>
+    </form>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo">Alpha<span>Threads</span> & Inks</div>
+      <p>Mumbai's most trusted custom t-shirt printing studio. Bringing your designs to life with premium quality and lightning-fast turnaround since 2018.</p>
+      <div class="social">
+        <button class="social-btn" title="Instagram">IG</button>
+        <button class="social-btn" title="Facebook">FB</button>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <a href="#categories">Sportswear</a>
+      <a href="#categories">Casual Tees</a>
+      <a href="#categories">Hoodies</a>
+      <a href="#categories">Corporate Wear</a>
+      <a href="#categories">Kids Collection</a>
+      <a href="#categories">Gym & Fitness</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#process">Our Process</a>
+      <a href="#tech">Print Technology</a>
+      <a href="#bulk">Bulk Orders</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Track Order</a>
+      <a href="#">Size Guide</a>
+      <a href="#">Design Help</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 AlphaThreads & Inks. All rights reserved. Made with ♥ in Mumbai.</p>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Shipping Policy</a>
+      <a href="#">Refund Policy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Cart -->
+<button class="floating-cart" id="cart-btn" onclick="showToast('Cart feature coming soon!')">
+  🛒
+  <div class="cart-badge" id="cart-count">0</div>
+</button>
+
+<!-- Back to Top -->
+<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ── Quantity & Pricing ── */
+  let qty = 1;
+  const prices = { 1: 499, 5: 399, 10: 299, 50: 149 };
+  function getPrice(q) {
+    if (q >= 50) return 149;
+    if (q >= 10) return 299;
+    if (q >= 5) return 399;
+    return 499;
+  }
+  function changeQty(delta) {
+    qty = Math.max(1, qty + delta);
+    document.getElementById('qty-display').textContent = qty;
+    document.getElementById('price-display').textContent = '₹' + getPrice(qty);
+  }
+
+  /* ── Cart ── */
+  let cartCount = 0;
+  function addToCart() {
+    cartCount++;
+    document.getElementById('cart-count').textContent = cartCount;
+    showToast('✓ Added to cart! ' + qty + ' tee(s) @ ₹' + getPrice(qty) + '/each');
+  }
+
+  /* ── Color Picker ── */
+  function setColor(el, color, textColor) {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tshirt-body').setAttribute('fill', color);
+    document.getElementById('tshirt-text').setAttribute('fill', textColor);
+    document.getElementById('tshirt-sub').setAttribute('fill', textColor);
+  }
+
+  /* ── Text Update ── */
+  function updateText(val) {
+    document.getElementById('tshirt-text').textContent = val.toUpperCase() || 'YOUR TEXT';
+  }
+
+  /* ── Fabric Select ── */
+  function selectFabric(el) {
+    document.querySelectorAll('.fabric-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ── Size Select ── */
+  function selectSize(el) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ── FAQ Toggle ── */
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  /* ── Toast ── */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  /* ── Form Submit ── */
+  function handleFormSubmit(e) {
+    e.preventDefault();
+    showToast('✓ Enquiry sent! We\'ll respond within 2 hours.');
+    e.target.reset();
+  }
+
+  /* ── Scroll Effects ── */
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    nav.style.boxShadow = window.scrollY > 10 ? '0 2px 24px rgba(0,0,0,0.09)' : 'none';
+    const bt = document.getElementById('back-top');
+    bt.classList.toggle('visible', window.scrollY > 500);
+  });
+
+  /* ── Intersection Animations ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.cat-card, .process-step, .pricing-card, .review-card, .tech-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(28px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
